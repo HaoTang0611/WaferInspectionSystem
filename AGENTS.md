@@ -31,6 +31,7 @@
 - 若需要較大範圍的變更，先拆成小步驟，本次只實作其中一個。
 - 完成後說明修改內容與驗證結果，讓使用者理解後再接續下一部分；不要自行連續實作後續部分。
 - 合作重點是維持使用者的心智模型與程式碼同步，而非追求一次完成大量功能。
+- 程式註解使用簡短繁體中文；EFEM、Aligner、SDK 等專業用語及程式識別名稱可保留英文。
 
 ## 已確認的版本與建置規格（2026-10-01）
 
@@ -69,5 +70,6 @@
 - 已建立合作原則與專案方向的本地記憶。
 - 已讀取 VS2015 方案、專案設定、`targetver.h`、`stdafx.h` 與版本定義，完成版本及建置規格的初步確認。
 - 已初步對照運動抽象與軸物件，並記錄 PCBA／晶圓設備的參考邊界；尚未進行完整功能架構分析。
-- 第一個實作為 `src/Motion/MotionResult.h`，包含 `MotionError` 與 `MotionResult`；尚未建立 IMotionController 或 Axis。
+- 第一個實作為 `src/Motion/MotionResult.h`，包含 `MotionError` 與 `MotionResult`。
+- 已建立 `src/Motion/IMotionController.h` 抽象契約，提供 MoveAbsolute、GetActualPosition、IsMotionDone、Stop，統一回傳 MotionResult。尚未建立 Axis 或具體控制器；軸集合與生命週期待設計 Axis 時討論。
 - 已建立根目錄的 `WaferInspectionSystem.sln`，供 IDE 瀏覽。當前 C++ 專案為 Utility，尚無執行程式；使用 v140／SDK 8.1／x64，輸出限制在 `build/`。已通過 MSBuild 14.0 的 Debug_Unicode|x64 建置流程（不含程式編譯）。

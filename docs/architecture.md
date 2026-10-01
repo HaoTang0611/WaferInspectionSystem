@@ -9,7 +9,7 @@
 - JET8000 提供工具鏈與底層實作參考，WLS3200-OLS 提供晶圓設備領域與架構參考；兩者都不直接整套移植。
 - 使用者擔心 PCBA 應用需求與底層控制過度耦合。進出板、板軌與 PCB 停板位置等內容不納入新專案。
 - 先從運動子系統討論。使用者傾向 YuanliCore 的設計：Axis 提供單軸操作，MotionController 作為控制器抽象，管理多個 Axis。
-- 持續採小步實作，一次只完成一個小部分；目前只建立運動呼叫結果型別。
+- 持續採小步實作，一次只完成一個小部分；目前已建立運動呼叫結果型別與控制器抽象契約。
 
 ## 第一個實作：MotionResult
 
@@ -22,8 +22,18 @@
 - `MotionResult` 包含 `error`、`nativeErrorCode` 與 `IsSuccess()`；預設為成功、原始錯誤碼為 0。
 - 成功表示本次呼叫成功，不代表實體運動已完成。上層依統一錯誤分類判斷，原始 SDK 錯誤碼供診斷使用。
 - 原始錯誤碼目前使用 int；接入實際 SDK 時須確認是否能完整保存其代碼。
-- IMotionController 的四個候選方法為 MoveAbsolute、GetActualPosition、IsMotionDone、Stop，目前尚未建立該介面。
+- IMotionController 已採用四個方法 MoveAbsolute、GetActualPosition、IsMotionDone、Stop，語意見下一節。
 - 目前命名採型別與方法 PascalCase、參數與公開資料欄位 camelCase；介面型別使用 I 前綴。
+
+## 第二個實作：IMotionController
+
+- 檔案位於 `src/Motion/IMotionController.h`，已加入方案的 Motion 篩選器。純抽象類別提供虛擬解構函式，四個方法皆回傳 MotionResult；只相依 MotionResult.h。
+- axisId 為控制器內的軸識別碼，由具體實作對應硬體，不預設是連續索引或廠商軸號。
+- MoveAbsolute 接受絕對目標位置；成功代表命令被接受，不等待運動完成。目標位置與實際位置使用相同的軸單位與原點；實際單位及設定方式待定。
+- GetActualPosition 與 IsMotionDone 透過參考參數輸出；只有呼叫成功時輸出值才有效。
+- IsMotionDone 的 true 表示軸已無進行中的運動，包含閒置或停止，不保證到達目標或成功完成前一筆命令。
+- Stop 請求停止，成功代表命令被接受，不表示已靜止；停止曲線由具體實作定義，此方法不是緊急停止。接入硬體前仍須明確定義減速與停止行為。
+- 本次只建立命令契約；Axis 集合、所有權、初始化、回原點與具體 SDK 實作留待後續小步設計。
 
 ## 原始碼觀察
 
@@ -85,7 +95,7 @@
 
 - 實際控制卡、驅動器與軸配置；一個控制器物件對應單卡、多卡或通訊系統的範圍。
 - 第一個單軸操作情境，以及最小契約。
-- MoveTo 表示命令送出或等待到位；完成、停止、逾時與錯誤如何表達。
+- MoveAbsolute 已定義為命令接受後返回；等待到位、逾時、運動結果與具體停止行為仍待設計。
 - 單位、座標、軟限位、回原點、狀態與等待邏輯各由哪層負責。
 - C++ 物件生命週期；建議控制器擁有 Axis、Axis 非擁有地參照控制器，但尚未定案。
 - 多軸同時下命令與插補／同步運動的需求區別。

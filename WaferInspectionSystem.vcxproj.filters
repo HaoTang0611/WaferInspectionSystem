@@ -6,6 +6,7 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="src\Motion\IMotionController.h"><Filter>Motion</Filter></ClInclude>
     <ClInclude Include="src\Motion\MotionResult.h"><Filter>Motion</Filter></ClInclude>
   </ItemGroup>
 </Project>

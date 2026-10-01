@@ -1,4 +1,4 @@
-#ifndef WAFER_INSPECTION_MOTION_RESULT_H
+﻿#ifndef WAFER_INSPECTION_MOTION_RESULT_H
 #define WAFER_INSPECTION_MOTION_RESULT_H
 
 enum class MotionError
@@ -12,12 +12,12 @@ enum class MotionError
     DriverError
 };
 
-// Describes the result of a call, not whether physical motion has completed.
+// 呼叫結果，不代表運動已完成。
 struct MotionResult
 {
     MotionError error;
 
-    // Original SDK error code for diagnostics; 0 when none is provided.
+    // SDK 原始錯誤碼，未提供時為 0。
     int nativeErrorCode;
 
     explicit MotionResult(
