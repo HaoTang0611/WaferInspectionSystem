@@ -1,0 +1,34 @@
+# Local reference material (read-only; not part of this repository).
+/readonly/
+
+# Build outputs.
+/build/
+/Debug/
+/Release/
+/x64/
+/x86/
+*.obj
+*.pch
+*.pdb
+*.ilk
+*.idb
+*.tlog
+*.lastbuildstate
+
+# Visual Studio and local IDE settings.
+/.vs/
+/.vscode/
+*.suo
+*.user
+*.VC.db
+*.VC.VC.opendb
+*.sdf
+*.opensdf
+ipch/
+
+# Local agent settings and credentials.
+/.codex/
+/.agents/
+/.aws/
+.env
+.env.*
